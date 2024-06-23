@@ -1,0 +1,7 @@
+This app shows the currencies of the countries , where you can like or unlike this currencies. I firstly started to create minimalistic design of our project and then I started to do the javascript problems of the app.
+I started with the api , i have created api in mockapi.io where I selfly implement the paramaters of every currency, then I use the API on my Search vue component where it show the every object. Then I have done pagination 
+which can help people to somehow filter the a big amount of currencies. And I have also a filtration on the title and fullname. I gave all the currencies the one united flag. And then I add the option where we can like or 
+unlike the currencies according to our wish and it will show in favourites page.  But if be honest it stores not correctly , if we refresh the page it will not be stored , so it a big cons of my project. I will say that my project
+is not ideal , but the main ideas working pretty good. 
+
+Also https://66780f6f0bd45250561d5c45.mockapi.io/api/v1/posts this is the link of api
