@@ -1,7 +1,6 @@
 <template>
   <div>
     <Search @search-complete="handleSearchComplete" />
-    <!-- Display fetched currencies here -->
     <div v-if="currencies.length">
       <div v-for="currency in currencies" :key="currency.id" class="currency-item">
         <div class="currency-details">
@@ -9,7 +8,6 @@
           <p><strong>Title:</strong> {{ currency.title }}</p>
           <p><strong>Description:</strong> {{ currency.description }}</p>
           <img v-if="currency.avatar" :src="currency.avatar" alt="Avatar">
-          <!-- Heart icon for like/unlike -->
           <img 
             :src="currency.liked ? clickedHeart : heart"
             alt="Heart icon" 
@@ -19,7 +17,6 @@
         </div>
       </div>
     </div>
-    <router-link to="/favourites">Go to Favourites</router-link>
   </div>
 </template>
 
@@ -37,11 +34,10 @@ export default {
   setup() {
     const currencies = ref([]);
 
-    
     const handleSearchComplete = (data) => {
       currencies.value = data.map(item => ({
         ...item,
-        liked: !!localStorage.getItem(`currency_${item.id}`)
+        liked: JSON.parse(localStorage.getItem(`currency_${item.id}`)) || false
       }));
     };
 
@@ -64,6 +60,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .currency-item {

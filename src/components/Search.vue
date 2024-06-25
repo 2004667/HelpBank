@@ -14,7 +14,7 @@
               <p><strong>Description:</strong> {{ currency.description }}</p>
               <img src="../assets/images/earth.png" width="40px" height="40px" :alt="currency.title + ' Avatar'" class="currency-avatar">
               <img 
-                :src="currency.liked ? clickedHeart : heart"
+                :src="getHeartIcon(currency)"
                 alt="Heart icon" 
                 @click="toggleLike(currency)" 
                 class="like-icon"
@@ -53,8 +53,8 @@ export default {
     const currencies = ref([]);
     const isLoading = ref(false);
     const currentPage = ref(1);
-    const currentPageSize = ref(10); 
-    const pageSizes = [5, 10, 15, 20]; 
+    const currentPageSize = ref(10);
+    const pageSizes = [5, 10, 15, 20];
 
     onMounted(() => {
       searchCurrencies();
@@ -68,17 +68,19 @@ export default {
           throw new Error('Failed to fetch currencies');
         }
         const data = await response.json();
-        currencies.value = data.map(item => {
-          const liked = JSON.parse(localStorage.getItem(`currency_${item.id}`));
-          return {
-            id: item.id,
-            fullname: item.fullname,
-            title: item.title,
-            description: item.description,
-            avatar: item.avatar,
-            liked: !!liked 
-          };
-        });
+    currencies.value = data.map(item => {
+      const localStorageKey = `currency_${item.id}`;
+      const liked = JSON.parse(localStorage.getItem(localStorageKey)) || false;
+
+      return {
+      
+        fullname: item.fullname,
+        title: item.title,
+        description: item.description,
+        avatar: item.avatar,
+        liked: !!liked  // Convert liked to boolean
+      };
+    });
         isLoading.value = false;
       } catch (error) {
         console.error('Error fetching currencies:', error);
@@ -111,16 +113,16 @@ export default {
 
     const changePageSize = (event) => {
       currentPageSize.value = parseInt(event.target.value, 10);
-      currentPage.value = 1; 
+      currentPage.value = 1;
     };
 
     const toggleLike = (currency) => {
       currency.liked = !currency.liked;
-      if (currency.liked) {
-        localStorage.setItem(`currency_${currency.id}`, JSON.stringify(currency));
-      } else {
-        localStorage.removeItem(`currency_${currency.id}`);
-      }
+      localStorage.setItem(`currency_${currency.title}`, JSON.stringify(currency.liked));
+    };
+
+    const getHeartIcon = (currency) => {
+      return currency.liked ?   heart   :  clickedHeart;
     };
 
     return {
@@ -136,15 +138,10 @@ export default {
       setCurrentPage,
       changePageSize,
       pageSizes,
-      toggleLike
+      toggleLike,
+      getHeartIcon
     };
   },
-  data() {
-    return {
-      heart,
-      clickedHeart
-    };
-  }
 };
 </script>
 
@@ -254,5 +251,6 @@ ul {
   width: 25px; /* Adjust the width of the heart icon */
   height: 25px; /* Adjust the height of the heart icon */
   cursor: pointer;
+  margin-left: 5px;
 }
 </style>
